@@ -1,9 +1,9 @@
 {
   "name": "SZA",
   "version": "1.0.0",
-  "main": "index.js",         
+  "main": "index.js",
   "scripts": {
-    "start": "node index.js"         
+    "start": "node index.js"
   },
   "repository": "https://github.com/Neiman-Tech/SZA",
   "author": "Neiman-Tech <userclientb52@gmail.com>",
@@ -11,6 +11,7 @@
   "dependencies": {
     "dotenv": "^16.5.0",
     "express": "^5.1.0",
+    "express-session": "^1.18.1",
     "mongoose": "^8.14.0"
   }
 }

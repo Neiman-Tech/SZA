@@ -1,25 +1,161 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
+<head>                                                
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Signup - Clean UI</title>
+    <title>Signup</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
+    <style>
+        .password-hints {
+            margin-top: 10px;
+            font-size: 14px;
+            color: #555;
+        }
+        .password-hints span {
+            display: block;
+            margin-bottom: 5px;
+        }
+        .valid {
+            color: green;
+        }
+        .invalid {
+            color: red;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
         <div class="form-container">
             <h2>Create Account</h2>
-            <form action="#">
-                <input type="text" placeholder="Full Name" required>
-                <input type="email" placeholder="Email" required>
-                <input type="password" placeholder="Password" required>
-                <input type="password" placeholder="Confirm Password" required>
-                <button type="submit">Sign Up</button>
+            <form id="signupForm">
+                <input id="name" type="text" placeholder="Full Name" required>
+                <input id="email" type="email" placeholder="Email" required>
+                <input id="password" type="password" placeholder="Password" required>
+                <input id="confirm" type="password" placeholder="Confirm Password" required>
+                <div class="password-hints" id="passwordHints">
+                    <span id="length" class="invalid">✖ Minimum 6 characters</span>
+                    <span id="uppercase" class="invalid">✖ At least one uppercase letter</span>
+                    <span id="lowercase" class="invalid">✖ At least one lowercase letter</span>
+                    <span id="number" class="invalid">✖ At least one number</span>
+                    <span id="special" class="invalid">✖ At least one special character (!@#$%^&*)</span>
+                </div>
+                <button id="button" type="submit">Sign Up</button>
             </form>
             <p>Already have an account? <a href="login.html">Login here</a></p>
         </div>
     </div>
+
+    <script>
+        const thisName = document.getElementById("name");
+        const thisEmail = document.getElementById("email");
+        const thisPassword = document.getElementById("password");
+        const thisButton = document.getElementById("button");
+        const verify = document.getElementById("confirm");
+        const signupForm = document.getElementById("signupForm");
+
+        // Password hint elements
+        const lengthHint = document.getElementById("length");
+        const uppercaseHint = document.getElementById("uppercase");
+        const lowercaseHint = document.getElementById("lowercase");
+        const numberHint = document.getElementById("number");
+        const specialHint = document.getElementById("special");
+
+        // Real-time password checking
+        thisPassword.addEventListener('input', () => {
+            const password = thisPassword.value;
+            updatePasswordHints(password);
+        });
+
+        function updatePasswordHints(password) {
+            if (password.length >= 6) {
+                markValid(lengthHint);
+            } else {
+                markInvalid(lengthHint);
+            }
+
+            if (/[A-Z]/.test(password)) {
+                markValid(uppercaseHint);
+            } else {
+                markInvalid(uppercaseHint);
+            }
+
+            if (/[a-z]/.test(password)) {
+                markValid(lowercaseHint);
+            } else {
+                markInvalid(lowercaseHint);
+            }
+
+            if (/[0-9]/.test(password)) {
+                markValid(numberHint);
+            } else {
+                markInvalid(numberHint);
+            }
+
+            if (/[!@#$%^&*(),.?":{}|<>]/.test(password)) {
+                markValid(specialHint);
+            } else {
+                markInvalid(specialHint);
+            }
+        }
+
+        function markValid(element) {
+            element.classList.add("valid");
+            element.classList.remove("invalid");
+            element.innerHTML = '✔ ' + element.innerText.slice(2);
+        }
+
+        function markInvalid(element) {
+            element.classList.add("invalid");
+            element.classList.remove("valid");
+            element.innerHTML = '✖ ' + element.innerText.slice(2);
+        }
+
+        signupForm.addEventListener("submit", async function submit(event) {
+            event.preventDefault();
+
+            if (thisPassword.value !== verify.value) {
+                alert("Passwords do not match.");
+                return;
+            }
+
+            const allValid = document.querySelectorAll(".password-hints .valid").length === 5;
+            if (!allValid) {
+                alert("Password doesn't meet all strength requirements.");
+                return;
+            }
+
+            thisButton.disabled = true;
+            thisButton.innerText = "Creating...";
+
+            try {
+                const response = await fetch("/users", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        name: thisName.value,
+                        email: thisEmail.value,
+                        password: thisPassword.value
+                    })
+                });
+
+                const message = await response.json();
+                console.log(message);
+
+                if (response.ok) {
+                    alert("Account created successfully!");
+                    window.location.href = "/login";
+                } else {
+                    alert("Error: " + (message.error || "Something went wrong"));
+                }
+            } catch (error) {
+                console.error(error);
+                alert("Error creating account, please try again.");
+            } finally {
+                thisButton.disabled = false;
+                thisButton.innerText = "Sign Up";
+            }
+        });
+    </script>
 </body>
 </html>

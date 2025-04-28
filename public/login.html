@@ -12,12 +12,34 @@
         <div class="form-container">
             <h2>Login</h2>
             <form action="#">
-                <input type="email" placeholder="Email" required>
-                <input type="password" placeholder="Password" required>
+                <input type="email" id="email" placeholder="Email" required>
+                <input type="password" id="password" placeholder="Password" required>
+                
+                <!-- Show Password Checkbox -->
+                <label>
+                    <input type="checkbox" id="show-password"> Show Password
+                </label>
+
                 <button type="submit">Log In</button>
             </form>
             <p>Don't have an account? <a href="signup.html">Sign up here</a></p>
         </div>
     </div>
+    <script src="login.js"></script>
+    <script>
+const passwordField = document.getElementById("password");
+const showPasswordCheckbox = document.getElementById("show-password");
+
+showPasswordCheckbox.addEventListener("change", function() {
+  
+  if (this.checked) {
+    passwordField.type = "text";  
+  } else {
+    passwordField.type = "password";  
+  }
+});
+
+
+    </script>
 </body>
 </html>
