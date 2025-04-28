@@ -1,14 +1,12 @@
 const express = require('express');
 const mongoose = require('mongoose');
+require('dotenv').config();
 const userRoutes = require('./routes/userRoutes');  
 
 const app = express();
 const port = 5000;
 
-mongoose.connect('mongodb+srv://<username>:<password>@cluster0.mongodb.net/mydb?retryWrites=true&w=majority', {
-  useNewUrlParser: true,
-  useUnifiedTopology: true
-})
+mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log('Connected to MongoDB Atlas'))
   .catch((err) => console.error('Error connecting to MongoDB:', err));
 
