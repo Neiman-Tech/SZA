@@ -4,11 +4,16 @@ const User = require('../models/User');
 
 const router = express.Router();
 
-// Use session middleware
-router.use(session({
-  secret: 'yourSecretKey',
+const MongoStore = require('connect-mongo');
+
+app.use(session({
+  secret: 'mySessionToken123',
   resave: false,
-  saveUninitialized: false
+  saveUninitialized: false,
+  store: MongoStore.create({
+    mongoUrl: process.env.MONGO_URI,
+    collectionName: 'sessions'
+  })
 }));
 
 // Create new user
