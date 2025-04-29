@@ -6,7 +6,7 @@ const router = express.Router();
 
 const MongoStore = require('connect-mongo');
 
-app.use(session({
+router.use(session({
   secret: 'mySessionToken123',
   resave: false,
   saveUninitialized: false,
